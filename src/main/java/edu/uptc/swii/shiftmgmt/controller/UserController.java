@@ -86,7 +86,7 @@ public class UserController {
         return ResponseEntity.created(new URI("/keycloak/user/create")).body(response);
     }
 
-    @PutMapping("/update/{fuserId}")
+    @PutMapping("/update/{userId}")
     @PreAuthorize("hasRole('Users-client-role') or hasRole('Administrators-client-role')")
     public ResponseEntity<?> updateUser(@PathVariable String userId, @RequestBody UserDTO userDTO) {
         userMgmtService.updateUser(userId, userDTO);
