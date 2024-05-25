@@ -4,6 +4,8 @@ package edu.uptc.swii.shiftmgmt.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,12 +17,18 @@ import edu.uptc.swii.shiftmgmt.util.SendRequest;
 
 @RestController
 @RequestMapping("/shifts")
+@PreAuthorize("hasRole('Administrators-client-role')")
 public class ShiftController {
     
     @Autowired
     private ShiftMgmtService shiftMgmtService;
     
     private SendRequest sendRequest = new SendRequest();
+
+    @GetMapping("/hello-2")
+    public String helloUser() {
+        return "Hello Spring Boot With Keycloak USER";
+    }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST, produces = "application/json")
     public String createShift(@RequestBody Shift shift) {

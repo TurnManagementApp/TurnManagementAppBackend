@@ -41,11 +41,6 @@ public class UserController {
         return"Hello Spring Boot With Keycloak ADMIN";
     }
 
-    @GetMapping("/hello-2")
-    public String helloUser() {
-        return "Hello Spring Boot With Keycloak USER";
-    }
-
     @GetMapping("/search")
     public ResponseEntity<?> findAllUsers() {
         return ResponseEntity.ok(userMgmtService.findAllUsers());
