@@ -17,7 +17,7 @@ import edu.uptc.swii.shiftmgmt.util.SendRequest;
 
 @RestController
 @RequestMapping("/shifts")
-@PreAuthorize("hasRole('Administrators-client-role')")
+@PreAuthorize("hasRole('Users-client-role') or hasRole('Administrators-client-role')")
 public class ShiftController {
     
     @Autowired
