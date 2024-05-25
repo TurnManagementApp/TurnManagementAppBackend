@@ -55,7 +55,6 @@ public class UserController {
 
 
     @RequestMapping(value = "/create", method = RequestMethod.POST, produces = "application/json")
-    @PreAuthorize("hasRole('Users-client-role') or hasRole('Administrators-client-role')")
     public String createUser(@RequestBody Map<String, Object> requestData) {
         Credentials credentials = new Credentials();
         credentials.setCredential_password((String) requestData.get("credential_password"));
@@ -80,7 +79,6 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('Users-client-role') or hasRole('Administrators-client-role')")
     public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO) throws URISyntaxException {
         String response = userMgmtService.createUser(userDTO);
         return ResponseEntity.created(new URI("/keycloak/user/create")).body(response);
