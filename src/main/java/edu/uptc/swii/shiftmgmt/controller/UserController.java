@@ -27,8 +27,6 @@ import edu.uptc.swii.shiftmgmt.domain.model.User;
 
 @RestController
 @RequestMapping("/keycloack/user")
-@PreAuthorize("hasRole('Administrators-client-role')")
-
 public class UserController {
 
     @Autowired
@@ -37,16 +35,19 @@ public class UserController {
     private SendRequest sendRequest = new SendRequest();
 
     @GetMapping("/hello-1")
+    @PreAuthorize("hasRole('Administrators-client-role')")
     public String helloAdmin(){
         return"Hello Spring Boot With Keycloak ADMIN";
     }
 
     @GetMapping("/search")
+    @PreAuthorize("hasRole('Administrators-client-role')")
     public ResponseEntity<?> findAllUsers() {
         return ResponseEntity.ok(userMgmtService.findAllUsers());
     }
 
     @GetMapping("/search/{username}")
+    @PreAuthorize("hasRole('Administrators-client-role')")
     public ResponseEntity<?> findAllUsers(@PathVariable String username) {
         return ResponseEntity.ok(userMgmtService.searchUserByUsername(username));
 
@@ -54,6 +55,7 @@ public class UserController {
 
 
     @RequestMapping(value = "/create", method = RequestMethod.POST, produces = "application/json")
+    @PreAuthorize("hasRole('Users-client-role') or hasRole('Administrators-client-role')")
     public String createUser(@RequestBody Map<String, Object> requestData) {
         Credentials credentials = new Credentials();
         credentials.setCredential_password((String) requestData.get("credential_password"));
@@ -70,6 +72,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/listAll", method = RequestMethod.GET, produces = "application/json")
+    @PreAuthorize("hasRole('Administrators-client-role')")
     public List<User> listUsers(){
         String json = "{ \"shiftlogs_table_name\":\"Users\", \"shiftlogs_action\":\"Searching Users\" }";
         sendRequest.sendPostRequest(json);
@@ -77,18 +80,21 @@ public class UserController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('Users-client-role') or hasRole('Administrators-client-role')")
     public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO) throws URISyntaxException {
         String response = userMgmtService.createUser(userDTO);
         return ResponseEntity.created(new URI("/keycloak/user/create")).body(response);
     }
 
     @PutMapping("/update/{fuserId}")
+    @PreAuthorize("hasRole('Users-client-role') or hasRole('Administrators-client-role')")
     public ResponseEntity<?> updateUser(@PathVariable String userId, @RequestBody UserDTO userDTO) {
         userMgmtService.updateUser(userId, userDTO);
         return ResponseEntity.ok( "User updated successfully!!");
     }
 
     @DeleteMapping("/delete/{userId}")
+    @PreAuthorize("hasRole('Administrators-client-role')")
     public ResponseEntity<?> deleteUser(@PathVariable String userId) {
         userMgmtService.deleteUser(userId);
         return ResponseEntity.noContent().build();
