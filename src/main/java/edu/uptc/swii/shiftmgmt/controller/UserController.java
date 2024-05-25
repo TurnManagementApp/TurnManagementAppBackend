@@ -26,7 +26,7 @@ import edu.uptc.swii.shiftmgmt.domain.model.Credentials;
 import edu.uptc.swii.shiftmgmt.domain.model.User;
 
 @RestController
-@RequestMapping("/keycloack/user")
+@RequestMapping("/keycloak/user")
 public class UserController {
 
     @Autowired
@@ -36,8 +36,8 @@ public class UserController {
 
     @GetMapping("/hello-1")
     @PreAuthorize("hasRole('Administrators-client-role')")
-    public String helloAdmin(){
-        return"Hello Spring Boot With Keycloak ADMIN";
+    public String helloAdmin() {
+        return "Hello Spring Boot With Keycloak ADMIN";
     }
 
     @GetMapping("/search")
@@ -53,26 +53,28 @@ public class UserController {
 
     }
 
-
     @RequestMapping(value = "/create", method = RequestMethod.POST, produces = "application/json")
     public String createUser(@RequestBody Map<String, Object> requestData) {
         Credentials credentials = new Credentials();
         credentials.setCredential_password((String) requestData.get("credential_password"));
-        User user = new User((Integer) requestData.get("user_id"), (String) requestData.get("user_first_name"), (String) requestData.get("user_last_name"),
-        (String) requestData.get("user_address"),(String) requestData.get("user_email"), (String) requestData.get("user_organization"), (String) requestData.get("user_type"), 
-        credentials);
+        User user = new User((Integer) requestData.get("user_id"), (String) requestData.get("user_first_name"),
+                (String) requestData.get("user_last_name"),
+                (String) requestData.get("user_address"), (String) requestData.get("user_email"),
+                (String) requestData.get("user_organization"), (String) requestData.get("user_type"),
+                credentials);
         userMgmtService.saveCredential(credentials);
         userMgmtService.saveUser(user);
-        //ShiftlogsMgmtService.saveShiftLogs(new ShiftLogs(null, "Users", "Saving User" + user.getUser_id() + user.getUser_email()));
+        // ShiftlogsMgmtService.saveShiftLogs(new ShiftLogs(null, "Users", "Saving User"
+        // + user.getUser_id() + user.getUser_email()));
         String json = "{ \"shiftlogs_table_name\":\"Users\", \"shiftlogs_action\":\"Creating Users\" }";
         sendRequest.sendPostRequest(json);
-        //ikeycloakService.createUser(user, credentials.getCredential_password());
+        // ikeycloakService.createUser(user, credentials.getCredential_password());
         return "Userid: " + user.getUser_id();
     }
 
     @RequestMapping(value = "/listAll", method = RequestMethod.GET, produces = "application/json")
     @PreAuthorize("hasRole('Administrators-client-role')")
-    public List<User> listUsers(){
+    public List<User> listUsers() {
         String json = "{ \"shiftlogs_table_name\":\"Users\", \"shiftlogs_action\":\"Searching Users\" }";
         sendRequest.sendPostRequest(json);
         return userMgmtService.listAllUser();
@@ -88,7 +90,7 @@ public class UserController {
     @PreAuthorize("hasRole('Users-client-role') or hasRole('Administrators-client-role')")
     public ResponseEntity<?> updateUser(@PathVariable String userId, @RequestBody UserDTO userDTO) {
         userMgmtService.updateUser(userId, userDTO);
-        return ResponseEntity.ok( "User updated successfully!!");
+        return ResponseEntity.ok("User updated successfully!!");
     }
 
     @DeleteMapping("/delete/{userId}")
