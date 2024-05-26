@@ -7,25 +7,33 @@ import lombok.Setter;
 import java.util.Set;
 
 @Entity
-@Table(name ="users")
+@Table(name = "users")
 public class User {
     @Id
-    //@GeneratedValue(strategy = GenerationType.AUTO)
-    @Getter @Setter
+    // @GeneratedValue(strategy = GenerationType.AUTO)
+    @Getter
+    @Setter
     private Integer user_id;
-    @Getter @Setter
+    @Getter
+    @Setter
     private String user_first_name;
-    @Getter @Setter
+    @Getter
+    @Setter
     private String user_last_name;
-    @Getter @Setter
+    @Getter
+    @Setter
     private String user_address;
-    @Getter @Setter
+    @Getter
+    @Setter
     private String user_email;
-    @Getter @Setter
+    @Getter
+    @Setter
     private String user_organization;
-    @Getter @Setter
+    @Getter
+    @Setter
     private String user_type;
-    @Getter @Setter
+    @Getter
+    @Setter
     private Set<String> user_roles;
 
     @OneToOne
@@ -47,6 +55,4 @@ public class User {
     public User() {
     }
 
-    
-    
 }
