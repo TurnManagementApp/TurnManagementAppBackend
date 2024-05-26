@@ -18,17 +18,17 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     @Autowired
-    private  JwtAuthenticationConverter JwtAuthenticationConverter;
-    
+    private JwtAuthenticationConverter JwtAuthenticationConverter;
+
     @Bean
-    SecurityFilterChain securityFilterChain (HttpSecurity httpSecurity) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests (http-> http.anyRequest().authenticated())
-            .oauth2ResourceServer (oauth -> {
-                oauth.jwt (jwt -> jwt.jwtAuthenticationConverter(JwtAuthenticationConverter));
-            })   
-            .sessionManagement (session -> session.sessionCreationPolicy (SessionCreationPolicy. STATELESS))
-            .build();
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(http -> http.anyRequest().authenticated())
+                .oauth2ResourceServer(oauth -> {
+                    oauth.jwt(jwt -> jwt.jwtAuthenticationConverter(JwtAuthenticationConverter));
+                })
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .build();
     }
 }

@@ -6,6 +6,7 @@ import edu.uptc.swii.shiftmgmt.domain.model.Shift;
 
 public interface ShiftMgmtService {
     public void saveShift(Shift shift);
+
     public List<Shift> listAllShifts();
-    
-} 
+
+}

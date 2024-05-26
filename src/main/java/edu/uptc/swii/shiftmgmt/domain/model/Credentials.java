@@ -15,11 +15,14 @@ import lombok.Setter;
 public class Credentials {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Getter @Setter
+    @Getter
+    @Setter
     private Integer credential_id;
-    @Getter @Setter
+    @Getter
+    @Setter
     private String credential_password;
-    @Getter @Setter
+    @Getter
+    @Setter
     private String credential_token;
 
     @OneToOne(mappedBy = "credentials", cascade = CascadeType.ALL)

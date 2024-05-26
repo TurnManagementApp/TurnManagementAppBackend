@@ -18,17 +18,17 @@ import edu.uptc.swii.shiftmgmt.util.SendRequest;
 @RestController
 @RequestMapping("/shifts")
 public class ShiftController {
-    
+
     @Autowired
     private ShiftMgmtService shiftMgmtService;
-    
+
     private SendRequest sendRequest = new SendRequest();
 
     @GetMapping("/hello-2")
     public String helloUser() {
         return "Hello Spring Boot With Keycloak USER";
     }
-    
+
     @PreAuthorize("hasRole('Users-client-role') or hasRole('Administrators-client-role')")
     @RequestMapping(value = "/create", method = RequestMethod.POST, produces = "application/json")
     public String createShift(@RequestBody Shift shift) {
@@ -40,10 +40,10 @@ public class ShiftController {
 
     @PreAuthorize("hasRole('Administrators-client-role')")
     @RequestMapping(value = "/listAll", method = RequestMethod.GET, produces = "application/json")
-    public List<Shift> listShifts(){
+    public List<Shift> listShifts() {
         String json = "{ \"shiftlogs_table_name\":\"Shifts\", \"shiftlogs_action\":\"Searching Shifts\" }";
         sendRequest.sendPostRequest(json);
         return shiftMgmtService.listAllShifts();
-     }
+    }
 
 }

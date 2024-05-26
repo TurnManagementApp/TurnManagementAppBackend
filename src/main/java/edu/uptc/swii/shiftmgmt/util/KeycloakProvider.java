@@ -6,7 +6,7 @@ import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UsersResource;
 
-public class KeycloackProvider {
+public class KeycloakProvider {
     private static final String SERVER_URL = "http://localhost:9090";
     private static final String REALM_NAME = "TurnsManagementApp";
     private static final String REALM_MASTER = "master";
@@ -15,7 +15,7 @@ public class KeycloackProvider {
     private static final String PASSWORD_CONSOLE = "admin";
     private static final String CLIENT_SECRET = "sPXUY3dDrMi8NpSlTSXxe7lbXbGzCjEe";
 
-    public static RealmResource getRealmResource(){
+    public static RealmResource getRealmResource() {
         Keycloak keycloak = KeycloakBuilder.builder()
                 .serverUrl(SERVER_URL)
                 .realm(REALM_MASTER)
@@ -30,8 +30,8 @@ public class KeycloackProvider {
         return keycloak.realm(REALM_NAME);
     }
 
-    public static UsersResource getUserResource(){
-        RealmResource realmResource =  getRealmResource();
+    public static UsersResource getUserResource() {
+        RealmResource realmResource = getRealmResource();
         return realmResource.users();
     }
 }

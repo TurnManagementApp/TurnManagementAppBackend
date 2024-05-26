@@ -16,12 +16,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-
 @Component
 public class JwtAuthenticationConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
     private final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-    
+
     @Value("${jwt.auth.converter.principle-attribute}")
     private String principleAtrribute;
 

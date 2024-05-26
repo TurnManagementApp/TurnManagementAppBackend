@@ -9,6 +9,7 @@ import org.keycloak.representations.idm.UserRepresentation;
 
 public interface UserMgmtService {
     public void saveUser(User user);
+
     public void saveCredential(Credentials credentials);
 
     public List<User> listAllUser();
