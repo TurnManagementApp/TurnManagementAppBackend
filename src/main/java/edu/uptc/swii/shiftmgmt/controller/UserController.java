@@ -83,7 +83,7 @@ public class UserController {
     @PostMapping("/create2")
     public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO) throws URISyntaxException {
         String response = userMgmtService.createUser(userDTO);
-        return ResponseEntity.created(new URI("/keycloak/user/create")).body(response);
+        return ResponseEntity.created(new URI("/keycloak/user/create2")).body(response);
     }
 
     @PutMapping("/update/{userId}")
