@@ -31,9 +31,6 @@ public class User {
     private String user_organization;
     @Getter
     @Setter
-    private String user_type;
-    @Getter
-    @Setter
     private Set<String> user_roles;
 
     @OneToOne
@@ -41,14 +38,13 @@ public class User {
     private Credentials credentials;
 
     public User(Integer user_id, String user_first_name, String user_last_name, String user_address, String user_email,
-            String user_organization, String user_type, Credentials credentials) {
+            String user_organization, Credentials credentials) {
         this.user_id = user_id;
         this.user_first_name = user_first_name;
         this.user_last_name = user_last_name;
         this.user_address = user_address;
         this.user_email = user_email;
         this.user_organization = user_organization;
-        this.user_type = user_type;
         this.credentials = credentials;
     }
 

@@ -53,23 +53,36 @@ public class UserController {
 
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST, produces = "application/json")
-    public String createUser(@RequestBody Map<String, Object> requestData) {
+    @PostMapping("/create")
+    public ResponseEntity<?> createUser(@RequestBody Object requestData) throws URISyntaxException {
+        if (requestData instanceof Map) {
+            Map<String, Object> mapData = (Map<String, Object>) requestData;
+            return handleCreateUserFromMap(mapData);
+        } else if (requestData instanceof UserDTO) {
+            UserDTO userDTO = (UserDTO) requestData;
+            return handleCreateUserFromDTO(userDTO);
+        } else {
+            return ResponseEntity.badRequest().body("Invalid request data");
+        }
+    }
+
+    private ResponseEntity<?> handleCreateUserFromMap(Map<String, Object> requestData) {
         Credentials credentials = new Credentials();
         credentials.setCredential_password((String) requestData.get("credential_password"));
         User user = new User((Integer) requestData.get("user_id"), (String) requestData.get("user_first_name"),
-                (String) requestData.get("user_last_name"),
-                (String) requestData.get("user_address"), (String) requestData.get("user_email"),
-                (String) requestData.get("user_organization"), (String) requestData.get("user_type"),
-                credentials);
+                (String) requestData.get("user_last_name"), (String) requestData.get("user_address"),
+                (String) requestData.get("user_email"), (String) requestData.get("user_organization")
+                , credentials);
         userMgmtService.saveCredential(credentials);
         userMgmtService.saveUser(user);
-        // ShiftlogsMgmtService.saveShiftLogs(new ShiftLogs(null, "Users", "Saving User"
-        // + user.getUser_id() + user.getUser_email()));
         String json = "{ \"shiftlogs_table_name\":\"Users\", \"shiftlogs_action\":\"Creating Users\" }";
         sendRequest.sendPostRequest(json);
-        // ikeycloakService.createUser(user, credentials.getCredential_password());
-        return "Userid: " + user.getUser_id();
+        return ResponseEntity.ok("Userid: " + user.getUser_id());
+    }
+
+    private ResponseEntity<?> handleCreateUserFromDTO(UserDTO userDTO) throws URISyntaxException {
+        String response = userMgmtService.createUser(userDTO);
+        return ResponseEntity.created(new URI("/keycloak/user/create")).body(response);
     }
 
     @RequestMapping(value = "/listAll", method = RequestMethod.GET, produces = "application/json")
@@ -78,12 +91,6 @@ public class UserController {
         String json = "{ \"shiftlogs_table_name\":\"Users\", \"shiftlogs_action\":\"Searching Users\" }";
         sendRequest.sendPostRequest(json);
         return userMgmtService.listAllUser();
-    }
-
-    @PostMapping("/create2")
-    public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO) throws URISyntaxException {
-        String response = userMgmtService.createUser(userDTO);
-        return ResponseEntity.created(new URI("/keycloak/user/create2")).body(response);
     }
 
     @PutMapping("/update/{userId}")
