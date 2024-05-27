@@ -54,35 +54,29 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createUser(@RequestBody Object requestData) throws URISyntaxException {
-        if (requestData instanceof Map) {
-            Map<String, Object> mapData = (Map<String, Object>) requestData;
-            return handleCreateUserFromMap(mapData);
-        } else if (requestData instanceof UserDTO) {
-            UserDTO userDTO = (UserDTO) requestData;
-            return handleCreateUserFromDTO(userDTO);
-        } else {
-            return ResponseEntity.badRequest().body("Invalid request data");
-        }
-    }
-
-    private ResponseEntity<?> handleCreateUserFromMap(Map<String, Object> requestData) {
+    public ResponseEntity<?> createUser(@RequestBody Map<String, Object> requestData) throws URISyntaxException {
+        // Creación de usuario en la base de datos
         Credentials credentials = new Credentials();
         credentials.setCredential_password((String) requestData.get("credential_password"));
         User user = new User((Integer) requestData.get("user_id"), (String) requestData.get("user_first_name"),
                 (String) requestData.get("user_last_name"), (String) requestData.get("user_address"),
-                (String) requestData.get("user_email"), (String) requestData.get("user_organization")
-                , credentials);
+                (String) requestData.get("user_email"), (String) requestData.get("user_organization"), credentials);
         userMgmtService.saveCredential(credentials);
         userMgmtService.saveUser(user);
         String json = "{ \"shiftlogs_table_name\":\"Users\", \"shiftlogs_action\":\"Creating Users\" }";
         sendRequest.sendPostRequest(json);
-        return ResponseEntity.ok("Userid: " + user.getUser_id());
-    }
 
-    private ResponseEntity<?> handleCreateUserFromDTO(UserDTO userDTO) throws URISyntaxException {
-        String response = userMgmtService.createUser(userDTO);
-        return ResponseEntity.created(new URI("/keycloak/user/create")).body(response);
+        // Creación de usuario en Keycloak
+        UserDTO userDTO = UserDTO.builder()
+                .userName((String) requestData.get("user_first_name")) // Asumiendo que el userName es el primer nombre
+                .email((String) requestData.get("user_email"))
+                .firstName((String) requestData.get("user_first_name"))
+                .lastName((String) requestData.get("user_last_name"))
+                .password((String) requestData.get("credential_password"))
+                .build();
+        String keycloakResponse = userMgmtService.createUser(userDTO);
+
+        return ResponseEntity.created(new URI("/user/create")).body("Userid: " + user.getUser_id() + ", Keycloak Response: " + keycloakResponse);
     }
 
     @RequestMapping(value = "/listAll", method = RequestMethod.GET, produces = "application/json")

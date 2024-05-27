@@ -1,9 +1,11 @@
 package edu.uptc.swii.shiftmgmt.util;
 
 import org.springframework.http.*;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import java.util.Collections;
 
+@Service
 public class SendRequest {
 
     public void sendPostRequest(String jsonP) {
