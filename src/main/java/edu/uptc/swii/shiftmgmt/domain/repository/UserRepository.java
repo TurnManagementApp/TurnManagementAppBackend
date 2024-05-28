@@ -6,4 +6,5 @@ import edu.uptc.swii.shiftmgmt.domain.model.User;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 
+    User findByUseremail(String user_email);
 }

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.uptc.swii.shiftmgmt.service.user.UserMgmtService;
-import edu.uptc.swii.shiftmgmt.util.SendRequest;
+// import edu.uptc.swii.shiftmgmt.util.SendRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +32,7 @@ public class UserController {
     @Autowired
     private UserMgmtService userMgmtService;
 
-    private SendRequest sendRequest = new SendRequest();
+    // private SendRequest sendRequest = new SendRequest();
 
     @GetMapping("/hello-1")
     @PreAuthorize("hasRole('Administrators-client-role')")
@@ -50,23 +50,28 @@ public class UserController {
     @PreAuthorize("hasRole('Administrators-client-role')")
     public ResponseEntity<?> findAllUsers(@PathVariable String username) {
         return ResponseEntity.ok(userMgmtService.searchUserByUsername(username));
-
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<?> createUser(@RequestBody Map<String, Object> requestData) throws URISyntaxException {
-        // Creación de usuario en la base de datos
+    @GetMapping("/search/email/{user_email}")
+    @PreAuthorize("hasRole('Users-client-role') or hasRole('Administrators-client-role')")
+    public ResponseEntity<?> findByEmail(@PathVariable String user_email) {
+        return ResponseEntity.ok(userMgmtService.findByUser_email(user_email));
+    }
+
+    @RequestMapping(value = "/create", method = RequestMethod.POST, produces = "application/json")
+    public String createUser(@RequestBody Map<String, Object> requestData) {
+        // User credentials
         Credentials credentials = new Credentials();
         credentials.setCredential_password((String) requestData.get("credential_password"));
+        userMgmtService.saveCredential(credentials);
+        // MySQL database user creation
         User user = new User((Integer) requestData.get("user_id"), (String) requestData.get("user_first_name"),
                 (String) requestData.get("user_last_name"), (String) requestData.get("user_address"),
-                (String) requestData.get("user_email"), (String) requestData.get("user_organization"), credentials);
-        userMgmtService.saveCredential(credentials);
+                (String) requestData.get("user_email"), (String) requestData.get("user_organization"),
+                credentials);
         userMgmtService.saveUser(user);
-        String json = "{ \"shiftlogs_table_name\":\"Users\", \"shiftlogs_action\":\"Creating Users\" }";
-        sendRequest.sendPostRequest(json);
 
-        // Creación de usuario en Keycloak
+        // Keycloak database user creation
         UserDTO userDTO = UserDTO.builder()
                 .userName((String) requestData.get("user_first_name"))
                 .email((String) requestData.get("user_email"))
@@ -76,14 +81,17 @@ public class UserController {
                 .build();
         String keycloakResponse = userMgmtService.createUser(userDTO);
 
-        return ResponseEntity.created(new URI("/user/create")).body("Userid: " + user.getUser_id() + ", Keycloak Response: " + keycloakResponse);
+        String json = "{ \"shiftlogs_table_name\":\"Users\", \"shiftlogs_action\":\"Creating Users\" }";
+        // sendRequest.sendPostRequest(json);
+
+        return keycloakResponse;
     }
 
     @RequestMapping(value = "/listAll", method = RequestMethod.GET, produces = "application/json")
     @PreAuthorize("hasRole('Administrators-client-role')")
     public List<User> listUsers() {
         String json = "{ \"shiftlogs_table_name\":\"Users\", \"shiftlogs_action\":\"Searching Users\" }";
-        sendRequest.sendPostRequest(json);
+        // sendRequest.sendPostRequest(json);
         return userMgmtService.listAllUser();
     }
 
