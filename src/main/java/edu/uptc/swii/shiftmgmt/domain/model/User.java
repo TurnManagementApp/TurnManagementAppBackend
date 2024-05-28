@@ -3,8 +3,6 @@ package edu.uptc.swii.shiftmgmt.domain.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Set;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -29,13 +27,10 @@ public class User {
     private String user_address;
     @Getter
     @Setter
-    private String user_email;
+    private String useremail;
     @Getter
     @Setter
     private String user_organization;
-    @Getter
-    @Setter
-    private Set<String> user_roles;
 
     @OneToOne
     @JoinColumn(name = "credential_id")
@@ -47,7 +42,7 @@ public class User {
         this.user_first_name = user_first_name;
         this.user_last_name = user_last_name;
         this.user_address = user_address;
-        this.user_email = user_email;
+        this.useremail = user_email;
         this.user_organization = user_organization;
         this.credentials = credentials;
     }

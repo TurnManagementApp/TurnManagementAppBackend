@@ -34,7 +34,6 @@ public class UserMgmtServiceImpl implements UserMgmtService {
     @Override
     public void saveUser(User user) {
         userRepo.save(user);
-
     }
 
     @Override
@@ -59,6 +58,11 @@ public class UserMgmtServiceImpl implements UserMgmtService {
         return KeycloakProvider.getRealmResource()
                 .users()
                 .searchByUsername(username, true);
+    }
+
+    @Override
+    public User findByUser_email(String user_email) {
+        return userRepo.findByUseremail(user_email);
     }
 
     @Override
@@ -91,28 +95,17 @@ public class UserMgmtServiceImpl implements UserMgmtService {
 
             RealmResource realmResource = KeycloakProvider.getRealmResource();
             List<RoleRepresentation> roleRepresentations = null;
-
-            if (userDTO.getRoles() == null || userDTO.getRoles().isEmpty()) {
-                roleRepresentations = List
-                        .of(realmResource.roles().get("users-role-TurnsManagementApp").toRepresentation());
-            } else {
-                roleRepresentations = realmResource.roles()
-                        .list()
-                        .stream()
-                        .filter(role -> userDTO.getRoles()
-                                .stream()
-                                .anyMatch(roleName -> roleName.equalsIgnoreCase(role.getName())))
-                        .toList();
-            }
+            roleRepresentations = List
+                    .of(realmResource.roles().get("users-role-TurnsManagementApp").toRepresentation());
             realmResource.users().get(userId).roles().realmLevel().add(roleRepresentations);
             return "User create successfully";
 
         } else if (status == 409) {
             log.error("User exist already");
-            return "usuario ya existe";
+            return "User exist already";
         } else {
             log.error("Error creating user");
-            return "contacte al administrador";
+            return "Error creating user";
         }
     }
 

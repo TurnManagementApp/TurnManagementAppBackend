@@ -23,4 +23,6 @@ public interface UserMgmtService {
     void deleteUser(String userId);
 
     void updateUser(String userId, UserDTO userDTO);
+
+    User findByUser_email(String user_email);
 }

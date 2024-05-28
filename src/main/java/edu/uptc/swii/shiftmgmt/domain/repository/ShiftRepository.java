@@ -6,4 +6,5 @@ import edu.uptc.swii.shiftmgmt.domain.model.Shift;
 
 public interface ShiftRepository extends MongoRepository<Shift, Integer> {
 
+    
 }
