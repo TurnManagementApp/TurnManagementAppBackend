@@ -1,27 +1,29 @@
 package edu.uptc.swii.shiftmgmt.service.user;
 
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.keycloak.OAuth2Constants;
+import org.keycloak.admin.client.resource.ClientResource;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
-import jakarta.ws.rs.core.Response;
-import lombok.extern.slf4j.Slf4j;
-import edu.uptc.swii.shiftmgmt.controller.dto.UserDTO;
-import edu.uptc.swii.shiftmgmt.util.KeycloakProvider;
-import jakarta.validation.constraints.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import edu.uptc.swii.shiftmgmt.controller.dto.UserDTO;
 import edu.uptc.swii.shiftmgmt.domain.model.Credentials;
 import edu.uptc.swii.shiftmgmt.domain.model.User;
 import edu.uptc.swii.shiftmgmt.domain.repository.CredentialRepository;
 import edu.uptc.swii.shiftmgmt.domain.repository.UserRepository;
+import edu.uptc.swii.shiftmgmt.util.KeycloakProvider;
+import jakarta.validation.constraints.NotNull;
+import jakarta.ws.rs.core.Response;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
@@ -98,6 +100,12 @@ public class UserMgmtServiceImpl implements UserMgmtService {
             roleRepresentations = List
                     .of(realmResource.roles().get("users-role-TurnsManagementApp").toRepresentation());
             realmResource.users().get(userId).roles().realmLevel().add(roleRepresentations);
+
+            ClientRepresentation clientRep = realmResource.clients().findByClientId("spring-client-api-rest").get(0);
+            String clientId = clientRep.getClientId(); // Obtener el ID del cliente
+            RoleRepresentation clientRole = realmResource.clients().get(clientId).roles().get("Users-client-role")
+                    .toRepresentation();
+
             return "User create successfully";
 
         } else if (status == 409) {
