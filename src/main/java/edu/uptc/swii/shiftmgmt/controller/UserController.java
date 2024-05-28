@@ -68,7 +68,7 @@ public class UserController {
 
         // Creación de usuario en Keycloak
         UserDTO userDTO = UserDTO.builder()
-                .userName((String) requestData.get("user_first_name")) // Asumiendo que el userName es el primer nombre
+                .userName((String) requestData.get("user_first_name"))
                 .email((String) requestData.get("user_email"))
                 .firstName((String) requestData.get("user_first_name"))
                 .lastName((String) requestData.get("user_last_name"))
